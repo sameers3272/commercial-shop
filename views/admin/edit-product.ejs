@@ -1,0 +1,51 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/product.css">
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+
+            <main>
+                <% if (errorMessage) { %>
+                    <div class="user-message user-message--error">
+                        <%= errorMessage %>
+                    </div>
+                    <% } %>
+                        <form class="product-form" method="POST" action="<% if(editing){%>/admin/edit-product<% } else{ %>/admin/add-products<% } %>" enctype="multipart/form-data">
+                    
+                            <div class="form-control">
+                                <label for="title">Title</label>
+                                <input type="text" name="title" id="title"
+                                    value="<%if(editing || hasErrors){%><%=oldData.title %><% } %>"
+                                    class="<%=errors.find(e=>e.param==='title')?'invalid':'' %>" />
+                            </div>
+                            <div class="form-control">
+                                <label for="image">Image</label>
+                                <input type="file" name="image" id="image" />
+                            </div>
+                            <div class="form-control">
+                                <label for="price">Price</label>
+                                <input type="number" name="price" id="price" step="0.01"
+                                    value="<% if(editing || hasErrors){ %><%= oldData.price %><% }%>"
+                                    class="<%=errors.find(e=>e.param==='price')?'invalid':'' %>" />
+                            </div>
+                            <div class="form-control">
+                                <label for="description">Description</label>
+                                <textarea name="description" id="description"
+                                    class="<%=errors.find(e=>e.param==='description')?'invalid':'' %>"
+                                    rows="5"><% if(editing || hasErrors){ %><%= oldData.description %><% }%></textarea>
+                            </div>
+                            <% if(editing || hasErrors){%>
+                                <input type="hidden" name="productId" value="<%= oldData._id %>">
+                                <% } %>
+
+                                    <input type="hidden" name="_csrf" id="_csrf" value="<%=csrfToken%>">
+
+                                    <button class="btn" type="submit">
+                                        <% if (editing||hasErrors) { %>Update Product <%} else { %>Add Product <% } %>
+                                    </button>
+                             
+                        </form>
+            </main>
+            <%- include('../includes/end.ejs') %>
