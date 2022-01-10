@@ -144,13 +144,13 @@ exports.postEditProduct = (req, res, next) => {
     }
 
 
-    // if (product.userId !== req.user.id) {
-    //     return res.redirect('/');
-    // }
 
 
     Product.findById(prodId)
         .then(product => {
+            if (product.userId.toString() !== req.user._id.toString()) {
+                return next(new Error("Unauthorized user..!"));
+            }
             product.title = updatedTitle;
             product.price = updatePrice;
             if (image) {
@@ -174,9 +174,8 @@ exports.postEditProduct = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => {
     Product
-        .find()
+        .find({userId:req.user._id})
         .then(products => {
-
             res.render('admin/products', {
                 pageTitle: "Admin Products",
                 path: '/admin/products',

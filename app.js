@@ -63,7 +63,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(helmet());
 app.use(compression());
-app.use(morgan('combined', { stream: accessLogStream }));
+app.use(morgan('combined', { stream: accessLogStream  }));
 
 app.use(session({ secret: 'my secret', resave: false, saveUninitialized: false, store: store }));
 
@@ -81,7 +81,10 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
     if (!req.session.user) {
         return next();
+
     }
+    
+
     User.findById(req.session.user._id)
         .then(user => {
             if (!user) {
@@ -107,9 +110,8 @@ app.use(errorRoutes);
 app.use(errorController.get404)
 
 app.use((errors, req, res, next) => {
-    console.log(errors);
     res.redirect('/500');
-
+    next();
 })
 
 mongoose.connect(MONGOBD_URI)
