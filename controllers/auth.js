@@ -217,13 +217,14 @@ exports.postReset = (req, res, next) => {
                 return user.save();
             })
             .then(result => {
+                const currentDomain = req.get("host");
                 transporter.sendMail({
                     to: req.body.email,
                     from: 'sameers3272@gmail.com',
                     subject: "Reseting the Password",
                     html: `
                             <p>You Requested a password reset</p>
-                            <p>Click this <a href='http://localhost:3000/reset/${token}'>link</a> to reset the new password</p>
+                            <p>Click this <a href="https://${currentDomain}/reset/${token}">link</a> to reset the new password</p>
                             `});
                 return res.redirect('/login');
             })
